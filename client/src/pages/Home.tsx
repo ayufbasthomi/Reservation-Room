@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+const API = import.meta.env.VITE_API_BASE_URL;
 
 interface Room {
   _id: string;
@@ -14,7 +15,7 @@ export default function Home() {
   }, []);
 
   const fetchRooms = async () => {
-    const res = await fetch('http://localhost:5000/api/rooms');
+    const res = await fetch(`${API}/rooms`);
     const data = await res.json();
     setRooms(data);
   };
