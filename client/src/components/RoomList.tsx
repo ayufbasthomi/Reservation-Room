@@ -42,7 +42,7 @@ export default function RoomList() {
     <div className="w-full px-4 max-w-4xl mx-auto text-white rounded-xl shadow mt-6 overflow-visible">
       <h2 className="text-xl font-bold mb-4 text-center">Room Availability</h2>
 
-        <div className="flex flex-wrap items-end justify-center gap-4 mb-6 w-full">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-end justify-center gap-4 mb-6 w-full">
             {/* From */}
             <div className="relative">
                 <label className="text-sm font-medium text-gray-600 mb-1">From</label>
@@ -67,10 +67,10 @@ export default function RoomList() {
 
             {/* Button */}
             <button
-                onClick={fetchReservations}
-                className="bg-blue-600 text-white px-4 py-2 rounded h-[42px] mt-2 sm:mt-6 hover:bg-blue-700 transition"
+              onClick={fetchReservations}
+              className="bg-blue-600 text-white px-4 py-2 rounded h-[42px] hover:bg-blue-700 transition"
             >
-                Check
+              Check
             </button>
         </div>
 

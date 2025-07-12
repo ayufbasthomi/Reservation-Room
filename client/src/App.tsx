@@ -26,7 +26,7 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white pb-20">
+    <div className="min-h-screen bg-gray-900 text-white pb-20 overflow-y-auto">
       <header className="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 text-center shadow fixed left-0 right-0 flex justify-around items-center py-2 z-50">
         <h1 className="text-2xl font-semibold">Room Reservation System</h1>
       </header>
