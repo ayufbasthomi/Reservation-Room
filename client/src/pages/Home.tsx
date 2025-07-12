@@ -7,7 +7,7 @@ interface Room {
 }
 
 export default function Home() {
-  const [rooms, setRooms] = useState<Room[]>([]);
+  const [, setRooms] = useState<Room[]>([]);
 
   useEffect(() => {
     fetchRooms();

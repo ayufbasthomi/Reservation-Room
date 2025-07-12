@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 export default function RoomManager() {
   const [roomName, setRoomName] = useState('');
-  const [rooms, setRooms] = useState([]);
+  type Room = { _id: string; name: string };
+  const [rooms, setRooms] = useState<Room[]>([]);
 
   const fetchRooms = async () => {
     const res = await axios.get('http://localhost:5000/api/rooms');
-    setRooms(res.data);
+    setRooms(res.data as Room[]);
   };
 
   const addRoom = async () => {

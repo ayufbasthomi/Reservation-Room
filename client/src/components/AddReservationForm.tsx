@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 export default function ReservationForm() {
-  const [rooms, setRooms] = useState([]);
+  type Room = { _id: string; name: string };
+  const [rooms, setRooms] = useState<Room[]>([]);
   const [roomId, setRoomId] = useState('');
   const [reservedBy, setReservedBy] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
 
   const fetchRooms = async () => {
-    const res = await axios.get('http://localhost:5000/api/rooms');
+    const res = await axios.get<Room[]>('http://localhost:5000/api/rooms');
     setRooms(res.data);
   };
 

@@ -13,8 +13,8 @@ router.get('/', async (req, res) => {
     filter = {
       $or: [
         {
-          startTime: { $lt: new Date(endTime) },
-          endTime: { $gt: new Date(startTime) },
+          startTime: { $lt: new Date(endTime as string) },
+          endTime: { $gt: new Date(startTime as string) },
         },
       ],
     };

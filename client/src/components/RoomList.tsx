@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 export default function RoomList() {
@@ -9,7 +9,7 @@ export default function RoomList() {
 
   const fetchRooms = async () => {
     const res = await axios.get('http://localhost:5000/api/rooms');
-    setRooms(res.data);
+    setRooms(res.data as any[]);
   };
 
     const fetchReservations = async () => {
@@ -22,7 +22,7 @@ export default function RoomList() {
         }
     });
 
-    setReservations(res.data);
+    setReservations(res.data as any[]);
     };
 
   useEffect(() => {

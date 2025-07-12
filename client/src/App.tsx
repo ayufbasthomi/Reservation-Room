@@ -1,5 +1,5 @@
 // src/App.tsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import RoomList from './components/RoomList';
 import ReservationForm from './components/AddReservationForm';
 import RoomManager from './components/AddRoomForm';

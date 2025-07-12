@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 export default function BookList() {
@@ -16,7 +16,7 @@ export default function BookList() {
     try {
       await cleanUpReservations();
       const res = await axios.get('http://localhost:5000/api/reservations');
-      setReservations(res.data);
+      setReservations(res.data as any[]);
     } catch (err) {
       console.error('Failed to fetch reservations:', err);
     }
