@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+const API = import.meta.env.VITE_API_BASE_URL;
 
 export default function RoomList() {
   const [rooms, setRooms] = useState<any[]>([]);
@@ -8,14 +9,14 @@ export default function RoomList() {
   const [endTime, setEndTime] = useState('');
 
   const fetchRooms = async () => {
-    const res = await axios.get('http://localhost:5000/api/rooms');
+    const res = await axios.get(`${API}/rooms`);
     setRooms(res.data as any[]);
   };
 
     const fetchReservations = async () => {
     if (!startTime || !endTime) return;
 
-    const res = await axios.get('http://localhost:5000/api/reservations', {
+    const res = await axios.get(`${API}/reservations`, {
         params: {
         startTime,
         endTime

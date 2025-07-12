@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+const API = import.meta.env.VITE_API_BASE_URL;
 
 export default function RoomManager() {
   const [roomName, setRoomName] = useState('');
@@ -7,18 +8,18 @@ export default function RoomManager() {
   const [rooms, setRooms] = useState<Room[]>([]);
 
   const fetchRooms = async () => {
-    const res = await axios.get('http://localhost:5000/api/rooms');
+    const res = await axios.get(`${API}/rooms`);
     setRooms(res.data as Room[]);
   };
 
   const addRoom = async () => {
-    await axios.post('http://localhost:5000/api/rooms', { name: roomName });
+    await axios.post(`${API}/rooms`, { name: roomName });
     setRoomName('');
     fetchRooms();
   };
 
   const deleteRoom = async (id: string) => {
-    await axios.delete(`http://localhost:5000/api/rooms/${id}`);
+    await axios.delete(`${API}/rooms/${id}`);
     fetchRooms();
   };
 

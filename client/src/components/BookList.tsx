@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+const API = import.meta.env.VITE_API_BASE_URL;
 
 export default function BookList() {
   const [reservations, setReservations] = useState<any[]>([]);
 
   const cleanUpReservations = async () => {
   try {
-    await axios.delete('http://localhost:5000/api/reservations/cleanup');
+    await axios.delete(`${API}/reservations/cleanup`);
   } catch (err) {
     console.error('Failed to clean up expired reservations:', err);
   }
@@ -15,7 +16,7 @@ export default function BookList() {
   const fetchReservations = async () => {
     try {
       await cleanUpReservations();
-      const res = await axios.get('http://localhost:5000/api/reservations');
+      const res = await axios.get(`${API}/reservations`);
       setReservations(res.data as any[]);
     } catch (err) {
       console.error('Failed to fetch reservations:', err);
