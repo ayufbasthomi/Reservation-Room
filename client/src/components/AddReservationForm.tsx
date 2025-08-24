@@ -51,7 +51,8 @@ export default function ReservationForm() {
       const res = await axios.get(`${API}/reservations`, {
         params: { roomId, startTime, endTime },
       });
-      if (res.data.length === 0) {
+      const reservations = res.data as any[];
+      if (reservations.length === 0) {
         setAvailability("Available ✅");
       } else {
         setAvailability("Booked ❌");

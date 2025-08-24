@@ -31,15 +31,17 @@ export default function AccountManager() {
   // Fetch user info
   const fetchUser = async () => {
     const res = await axios.get(`${API}/me`, { withCredentials: true });
-    setUser(res.data);
-    setUsername(res.data.username);
-    setEmail(res.data.email);
+    const userData = res.data as User;
+    setUser(userData);
+    setUsername(userData.username);
+    setEmail(userData.email);
   };
 
   // Fetch rooms
   const fetchRooms = async () => {
     const res = await axios.get(`${API}/rooms`);
-    const roomsWithImages = res.data.map((room: Room, index: number) => ({
+    const roomsData = res.data as Room[];
+    const roomsWithImages = roomsData.map((room: Room, index: number) => ({
       ...room,
       // Assign images from public folder based on index
       image: `/room${index + 1}.jpg`, 
@@ -50,7 +52,7 @@ export default function AccountManager() {
   // Fetch reservations (admin only)
   const fetchReservations = async () => {
     const res = await axios.get(`${API}/reservations`);
-    setReservations(res.data);
+    setReservations(res.data as Reservation[]);
   };
 
   // Add room (admin)
