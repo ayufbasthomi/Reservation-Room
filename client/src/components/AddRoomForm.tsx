@@ -29,13 +29,13 @@ export default function AccountManager() {
   const [password, setPassword] = useState("");
 
   // Fetch user info
-  const fetchUser = async () => {
-    const res = await axios.get(`${API}/me`, { withCredentials: true });
-    const userData = res.data as User;
-    setUser(userData);
-    setUsername(userData.username);
-    setEmail(userData.email);
-  };
+  // const fetchUser = async () => {
+  //   const res = await axios.get(`${API}/me`, { withCredentials: true });
+  //   const userData = res.data as User;
+  //   setUser(userData);
+  //   setUsername(userData.username);
+  //   setEmail(userData.email);
+  // };
 
   // Fetch rooms
   const fetchRooms = async () => {
