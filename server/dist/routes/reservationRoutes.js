@@ -7,12 +7,13 @@ const express_1 = __importDefault(require("express"));
 const Reservation_1 = __importDefault(require("../models/Reservation"));
 const Room_1 = __importDefault(require("../models/Room"));
 const router = express_1.default.Router();
-// GET all reservations
+// GET all reservations (with optional status filter)
 router.get('/', async (req, res) => {
-    const { startTime, endTime } = req.query;
+    const { startTime, endTime, status } = req.query;
     let filter = {};
     if (startTime && endTime) {
         filter = {
+            ...filter,
             $or: [
                 {
                     startTime: { $lt: new Date(endTime) },
@@ -20,6 +21,9 @@ router.get('/', async (req, res) => {
                 },
             ],
         };
+    }
+    if (status) {
+        filter.status = status;
     }
     try {
         const reservations = await Reservation_1.default.find(filter).populate('room');
@@ -30,11 +34,10 @@ router.get('/', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch reservations' });
     }
 });
-// POST new reservation
+// POST new reservation (default status = pending)
 router.post('/', async (req, res) => {
     try {
         const { roomId, reservedBy, startTime, endTime } = req.body;
-        // Validasi waktu
         if (!reservedBy || !startTime || !endTime || !roomId) {
             return res.status(400).json({ message: 'Missing required fields' });
         }
@@ -48,14 +51,45 @@ router.post('/', async (req, res) => {
         if (overlapping) {
             return res.status(409).json({ message: 'Time slot already booked for this room' });
         }
-        const reservation = new Reservation_1.default({ room: roomId, reservedBy, startTime, endTime });
+        const reservation = new Reservation_1.default({
+            room: roomId,
+            reservedBy,
+            startTime,
+            endTime,
+            status: 'pending', // 👈 always start as pending
+        });
         await reservation.save();
-        await Room_1.default.findByIdAndUpdate(roomId, { status: 'reserved' });
         res.status(201).json(reservation);
     }
     catch (err) {
         console.error('Error creating reservation:', err);
         res.status(500).json({ message: 'Server error' });
+    }
+});
+// PUT update reservation status (approve / reject)
+router.put('/:id', async (req, res) => {
+    try {
+        const { status } = req.body;
+        if (!['approved', 'rejected'].includes(status)) {
+            return res.status(400).json({ message: 'Invalid status' });
+        }
+        const reservation = await Reservation_1.default.findByIdAndUpdate(req.params.id, { status }, { new: true }).populate('room');
+        if (!reservation) {
+            return res.status(404).json({ message: 'Reservation not found' });
+        }
+        // if rejected, free up the room
+        if (status === 'rejected') {
+            await Room_1.default.findByIdAndUpdate(reservation.room._id, { status: 'available' });
+        }
+        // if approved, keep the room reserved
+        if (status === 'approved') {
+            await Room_1.default.findByIdAndUpdate(reservation.room._id, { status: 'reserved' });
+        }
+        res.json(reservation);
+    }
+    catch (error) {
+        console.error('❌ Failed to update reservation:', error);
+        res.status(500).json({ error: 'Failed to update reservation' });
     }
 });
 // Cleanup route to delete expired reservations
