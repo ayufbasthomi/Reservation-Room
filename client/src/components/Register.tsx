@@ -14,7 +14,6 @@ export default function Register({ onRegister, onSwitchToLogin }: RegisterProps)
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("user"); // 👈 default "user"
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
