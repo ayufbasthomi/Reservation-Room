@@ -5,14 +5,16 @@ const API = import.meta.env.VITE_API_BASE_URL;
 
 interface RegisterProps {
   onRegister: (user: any, token: string) => void;
-  onSwitchToLogin: () => void; // 👈 to go back to Login
+  onSwitchToLogin: () => void;
 }
 
 export default function Register({ onRegister, onSwitchToLogin }: RegisterProps) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("user"); // 👈 default "user"
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,11 +23,17 @@ export default function Register({ onRegister, onSwitchToLogin }: RegisterProps)
         username,
         email,
         password,
+        role,
       });
       const data = res.data as { user: any; token: string };
+
       localStorage.setItem("token", data.token);
       onRegister(data.user, data.token);
+
+      setError("");
+      setSuccess("Pendaftaran berhasil! ✅"); // show success message
     } catch (err) {
+      setSuccess("");
       setError("Pendaftaran gagal ❌. Coba gunakan email lain.");
     }
   };
@@ -47,7 +55,7 @@ export default function Register({ onRegister, onSwitchToLogin }: RegisterProps)
       <div className="w-2/5 bg-blue-700 flex flex-col justify-center items-center text-white px-10">
         <div className="max-w-xl w-full flex flex-col items-center">
           {/* Heading */}
-          <div className="mb-24">
+          <div className="mb-16">
             <h2 className="text-center text-4xl font-bold">BUAT AKUN BARU</h2>
             <h1 className="text-center text-8xl font-bold mb-2">SIPAMAN</h1>
             <p className="text-center text-2xl">
@@ -91,11 +99,31 @@ export default function Register({ onRegister, onSwitchToLogin }: RegisterProps)
               required
             />
 
-            <button
-              type="submit"
-              className="w-4/12 py-3 bg-white text-blue-700 font-semibold rounded-full hover:bg-gray-100 transition text-2xl"
+            {/* Dropdown Role */}
+            <div className="relative w-8/12">
+            <select
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="appearance-none w-full px-6 py-3 rounded-full border border-gray-300 bg-white text-black text-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer transition"
+                required
             >
-              Register
+                <option value="user">👤 User</option>
+                <option value="admin">⚙️ Admin</option>
+            </select>
+
+            {/* Custom dropdown arrow */}
+            <div className="pointer-events-none absolute inset-y-0 right-6 flex items-center text-gray-500">
+                ▼
+            </div>
+            </div>
+
+            {/* Register Button */}
+            <button
+            type="submit"
+            className="w-4/12 py-3 bg-white text-blue-700 font-semibold rounded-full 
+                        hover:bg-gray-100 transition text-2xl shadow-md active:scale-95"
+            >
+            Register
             </button>
           </form>
 

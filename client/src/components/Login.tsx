@@ -74,7 +74,8 @@ export default function Login({ onLogin, onSwitchToRegister }: LoginProps) {
             />
             <button
               type="submit"
-              className="w-4/12 py-3 bg-white text-blue-700 font-semibold rounded-full hover:bg-gray-100 transition text-2xl"
+              className="w-4/12 py-3 bg-white text-blue-700 font-semibold rounded-full 
+                        hover:bg-gray-100 transition text-2xl shadow-md active:scale-95"
             >
               Login
             </button>
