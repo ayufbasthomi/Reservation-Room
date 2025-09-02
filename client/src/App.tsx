@@ -68,12 +68,12 @@ const App = () => {
   if (!user) {
     return authPage === "login" ? (
       <Login
-        onLogin={(u, t) => setUser(u)}
+        onLogin={(u) => setUser(u)}
         onSwitchToRegister={() => setAuthPage("register")}
       />
     ) : (
       <Register
-        onRegister={(u, t) => setUser(u)}
+        onRegister={(u) => setUser(u)}
         onSwitchToLogin={() => setAuthPage("login")}
       />
     );
