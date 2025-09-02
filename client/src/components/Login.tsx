@@ -34,7 +34,7 @@ export default function Login({ onLogin, onSwitchToRegister }: LoginProps) {
         <img
           src="/pelatihanvokasi_logo.png"
           alt="Pelatihan Vokasi"
-          className="h-60"
+          className="h-40"
         />
       </div>
 

@@ -39,7 +39,7 @@ export default function Register({ onRegister, onSwitchToLogin }: RegisterProps)
         <img
           src="/pelatihanvokasi_logo.png"
           alt="Pelatihan Vokasi"
-          className="h-60"
+          className="h-40"
         />
       </div>
 

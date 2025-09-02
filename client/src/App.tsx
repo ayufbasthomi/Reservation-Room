@@ -87,7 +87,7 @@ const App = () => {
         {/* Logos */}
         <div className="flex items-center space-x-6">
           <img src="/kemnaker_logo.png" alt="Kemnaker" className="h-24" />
-          <img src="/pelatihanvikasi_logo.png" alt="Pelatihan Vokasi" className="h-12" />
+          <img src="/pelatihanvokasi_logo.png" alt="Pelatihan Vokasi" className="h-12" />
         </div>
 
         {/* Top Right Navigation */}
