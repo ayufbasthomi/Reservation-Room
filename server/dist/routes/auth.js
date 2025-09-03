@@ -13,7 +13,7 @@ const SECRET = process.env.JWT_SECRET || 'your_secret_key';
 // Register
 router.post('/register', async (req, res) => {
     try {
-        console.log("Incoming register body:", req.body);
+        console.log('Incoming register body:', req.body);
         const { username, email, password, role } = req.body;
         // Check if email already exists
         const existingUser = await User_1.default.findOne({ email });
@@ -53,27 +53,27 @@ router.post('/login', async (req, res) => {
     res.json({ token, user });
 });
 // Get profile
-router.get("/me", async (req, res) => {
-    const token = req.headers.authorization?.split(" ")[1];
+router.get('/me', async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
     if (!token)
-        return res.status(401).json({ message: "No token" });
+        return res.status(401).json({ message: 'No token' });
     try {
         const decoded = jsonwebtoken_1.default.verify(token, SECRET);
-        const user = await User_1.default.findById(decoded.id).select("-password"); // hide password
+        const user = await User_1.default.findById(decoded.id).select('-password'); // hide password
         if (!user)
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({ message: 'User not found' });
         res.json(user);
     }
     catch (err) {
-        res.status(401).json({ message: "Invalid token" });
+        res.status(401).json({ message: 'Invalid token' });
     }
 });
 // Update profile
-router.patch("/me", async (req, res) => {
+router.patch('/me', async (req, res) => {
     try {
-        const token = req.headers.authorization?.split(" ")[1];
+        const token = req.headers.authorization?.split(' ')[1];
         if (!token)
-            return res.status(401).json({ message: "No token" });
+            return res.status(401).json({ message: 'No token' });
         const decoded = jsonwebtoken_1.default.verify(token, SECRET);
         const updates = {
             username: req.body.username,
@@ -85,7 +85,7 @@ router.patch("/me", async (req, res) => {
         }
         const user = await User_1.default.findByIdAndUpdate(decoded.id, updates, { new: true });
         if (!user)
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({ message: 'User not found' });
         res.json({
             id: user._id,
             username: user.username,
@@ -95,7 +95,7 @@ router.patch("/me", async (req, res) => {
     }
     catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Server error" });
+        res.status(500).json({ message: 'Server error' });
     }
 });
 exports.default = router;

@@ -10,7 +10,7 @@ const SECRET = process.env.JWT_SECRET || 'your_secret_key';
 // Register
 router.post('/register', async (req: Request, res: Response) => {
   try {
-    console.log("Incoming register body:", req.body);
+    console.log('Incoming register body:', req.body);
     const { username, email, password, role } = req.body;
 
     // Check if email already exists
@@ -56,26 +56,26 @@ router.post('/login', async (req: Request, res: Response) => {
 });
 
 // Get profile
-router.get("/me", async (req: Request, res: Response) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) return res.status(401).json({ message: "No token" });
+router.get('/me', async (req: Request, res: Response) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ message: 'No token' });
 
   try {
     const decoded = jwt.verify(token, SECRET) as { id: string; role: string };
-    const user = await User.findById(decoded.id).select("-password"); // hide password
-    if (!user) return res.status(404).json({ message: "User not found" });
+    const user = await User.findById(decoded.id).select('-password'); // hide password
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
     res.json(user);
   } catch (err) {
-    res.status(401).json({ message: "Invalid token" });
+    res.status(401).json({ message: 'Invalid token' });
   }
 });
 
 // Update profile
-router.patch("/me", async (req: Request, res: Response) => {
+router.patch('/me', async (req: Request, res: Response) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) return res.status(401).json({ message: "No token" });
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ message: 'No token' });
 
     const decoded: any = jwt.verify(token, SECRET);
 
@@ -91,7 +91,7 @@ router.patch("/me", async (req: Request, res: Response) => {
 
     const user = await User.findByIdAndUpdate(decoded.id, updates, { new: true });
 
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
     res.json({
       id: user._id,
@@ -101,7 +101,7 @@ router.patch("/me", async (req: Request, res: Response) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
