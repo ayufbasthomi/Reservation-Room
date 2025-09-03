@@ -129,16 +129,19 @@ const App = () => {
           </button>
 
           {/* 👤 Logout */}
-          <button
-            onClick={() => {
-              localStorage.removeItem("token");
-              setUser(null);
-              setTab("home");
-            }}
-            className="flex flex-col items-center text-sm font-medium px-4 py-2 rounded-lg text-red-600 bg-white hover:bg-gray-100"
-          >
-            <span>LOGOUT</span>
-          </button>
+          <div className="flex-1 flex items-center justify-center">
+            <button
+              onClick={() => {
+                localStorage.removeItem("token");
+                setUser(null);
+                setTab("home");
+              }}
+              className="flex flex-col items-center text-sm font-medium px-6 py-5 rounded-lg 
+                        text-red-600 bg-white hover:bg-gray-100"
+            >
+              <span>LOGOUT</span>
+            </button>
+          </div>
         </nav>
       </header>
 
