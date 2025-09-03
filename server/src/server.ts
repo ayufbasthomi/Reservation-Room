@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import roomRoutes from './routes/roomRoutes';
 import reservationRoutes from './routes/reservationRoutes';
 import Room from './models/Room';
+import authRoutes from './routes/auth';
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.use(express.json());
 
 app.use('/api/rooms', roomRoutes);
 app.use('/api/reservations', reservationRoutes);
+app.use('/api/auth', authRoutes);
 
 mongoose.connect(process.env.MONGO_URI!)
   .then(async () => {

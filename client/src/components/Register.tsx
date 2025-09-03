@@ -14,7 +14,7 @@ export default function Register({ onRegister, onSwitchToLogin }: RegisterProps)
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("user"); // 👈 default "user"
   const [error, setError] = useState("");
-  const [, setSuccess] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +31,7 @@ export default function Register({ onRegister, onSwitchToLogin }: RegisterProps)
       onRegister(data.user, data.token);
 
       setError("");
-      setSuccess("Pendaftaran berhasil! ✅"); // show success message
+    //   setSuccess("Pendaftaran berhasil! ✅"); // show success message
     } catch (err) {
       setSuccess("");
       setError("Pendaftaran gagal ❌. Coba gunakan email lain.");
@@ -125,6 +125,18 @@ export default function Register({ onRegister, onSwitchToLogin }: RegisterProps)
             >
             Register
             </button>
+
+            {/* Success / Error Notification */}
+            {success && (
+            <p className="mt-4 text-green-300 bg-green-800 bg-opacity-40 p-2 rounded text-center w-8/12">
+                ✅ Pendaftaran berhasil! Silakan login.
+            </p>
+            )}
+            {/* {error && (
+            <p className="mt-4 text-red-300 bg-red-800 bg-opacity-40 p-2 rounded text-center w-8/12">
+                {error}
+            </p>
+            )} */}
           </form>
 
           {/* Switch to Login */}
