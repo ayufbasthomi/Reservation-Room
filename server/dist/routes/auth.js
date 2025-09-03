@@ -68,4 +68,34 @@ router.get("/me", async (req, res) => {
         res.status(401).json({ message: "Invalid token" });
     }
 });
+// Update profile
+router.patch("/me", async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token)
+            return res.status(401).json({ message: "No token" });
+        const decoded = jsonwebtoken_1.default.verify(token, SECRET);
+        const updates = {
+            username: req.body.username,
+            email: req.body.email,
+        };
+        if (req.body.password) {
+            const hashed = await bcryptjs_1.default.hash(req.body.password, 10);
+            updates.password = hashed;
+        }
+        const user = await User_1.default.findByIdAndUpdate(decoded.id, updates, { new: true });
+        if (!user)
+            return res.status(404).json({ message: "User not found" });
+        res.json({
+            id: user._id,
+            username: user.username,
+            email: user.email,
+            role: user.role,
+        });
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+});
 exports.default = router;

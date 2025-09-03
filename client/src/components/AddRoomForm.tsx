@@ -110,6 +110,9 @@ export default function AccountManager() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
+      // ✅ Immediately reload user info after update
+      await fetchUser();
+
       alert("Profile updated!");
       setPassword("");
     } catch (err) {
