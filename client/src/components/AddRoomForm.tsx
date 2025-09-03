@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Eye, EyeOff } from "lucide-react"; // 👈 make sure you have lucide-react installed
+import { Eye, EyeOff } from "lucide-react";
+
 const API = import.meta.env.VITE_API_BASE_URL;
 
 export default function AccountManager() {
@@ -28,34 +29,43 @@ export default function AccountManager() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // Fetch user info
-  // const fetchUser = async () => {
-  //   const res = await axios.get(`${API}/me`, { withCredentials: true });
-  //   const userData = res.data as User;
-  //   setUser(userData);
-  //   setUsername(userData.username);
-  //   setEmail(userData.email);
-  // };
+  /** ✅ Fetch logged-in user */
+  const fetchUser = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
 
-  // Fetch rooms
+      const res = await axios.get(`${API}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const userData = res.data as User;
+      setUser(userData);
+      setUsername(userData.username);
+      setEmail(userData.email);
+    } catch (err) {
+      console.error("Failed to fetch user:", err);
+    }
+  };
+
+  /** Fetch rooms */
   const fetchRooms = async () => {
     const res = await axios.get(`${API}/rooms`);
     const roomsData = res.data as Room[];
     const roomsWithImages = roomsData.map((room: Room, index: number) => ({
       ...room,
-      // Assign images from public folder based on index
-      image: `/room${index + 1}.jpg`, 
+      image: `/room${index + 1}.jpg`,
     }));
     setRooms(roomsWithImages);
   };
 
-  // Fetch reservations (admin only)
+  /** Fetch reservations (admin only) */
   const fetchReservations = async () => {
     const res = await axios.get(`${API}/reservations`);
     setReservations(res.data as Reservation[]);
   };
 
-  // Add room (admin)
+  /** Add room (admin) */
   const addRoom = async () => {
     const formData = new FormData();
     formData.append("name", roomName);
@@ -72,46 +82,44 @@ export default function AccountManager() {
     fetchRooms();
   };
 
-  // Delete room (admin)
+  /** Delete room (admin) */
   const deleteRoom = async (id: string) => {
     await axios.delete(`${API}/rooms/${id}`);
     fetchRooms();
   };
 
-  // Approve/reject reservation
+  /** Approve/reject reservation */
   const updateReservationStatus = async (id: string, status: string) => {
     await axios.patch(`${API}/reservations/${id}`, { status });
     fetchReservations();
   };
 
-  // Update profile
+  /** Update profile */
   const updateProfile = async () => {
-    await axios.patch(`${API}/me`, {
-      username,
-      email,
-      ...(password ? { password } : {}),
-    });
-    alert("Profile updated!");
-    setPassword("");
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      await axios.patch(
+        `${API}/auth/me`,
+        {
+          username,
+          email,
+          ...(password ? { password } : {}),
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      alert("Profile updated!");
+      setPassword("");
+    } catch (err) {
+      console.error("Profile update failed:", err);
+    }
   };
 
-  // useEffect(() => {
-  //   fetchUser();
-  //   fetchRooms();
-  //   fetchReservations();
-  // }, []);
-
+  /** Load data on mount */
   useEffect(() => {
-    // Hardcoded user (replace with fetchUser() later)
-    const fakeUser: User = {
-      username: "AdminUser",
-      email: "admin@example.com",
-      role: "admin",
-    };
-    setUser(fakeUser);
-    setUsername(fakeUser.username);
-    setEmail(fakeUser.email);
-    setPassword("admintest123"); // just show stars, never real password
+    fetchUser();
     fetchRooms();
     fetchReservations();
   }, []);

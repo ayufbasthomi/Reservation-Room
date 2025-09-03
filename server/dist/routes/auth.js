@@ -53,16 +53,19 @@ router.post('/login', async (req, res) => {
     res.json({ token, user });
 });
 // Get profile
-router.get('/me', (req, res) => {
-    const token = req.headers.authorization?.split(' ')[1];
+router.get("/me", async (req, res) => {
+    const token = req.headers.authorization?.split(" ")[1];
     if (!token)
-        return res.status(401).json({ message: 'No token' });
+        return res.status(401).json({ message: "No token" });
     try {
         const decoded = jsonwebtoken_1.default.verify(token, SECRET);
-        res.json(decoded);
+        const user = await User_1.default.findById(decoded.id).select("-password"); // hide password
+        if (!user)
+            return res.status(404).json({ message: "User not found" });
+        res.json(user);
     }
-    catch {
-        res.status(401).json({ message: 'Invalid token' });
+    catch (err) {
+        res.status(401).json({ message: "Invalid token" });
     }
 });
 exports.default = router;

@@ -56,14 +56,18 @@ router.post('/login', async (req: Request, res: Response) => {
 });
 
 // Get profile
-router.get('/me', (req: Request, res: Response) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) return res.status(401).json({ message: 'No token' });
+router.get("/me", async (req: Request, res: Response) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return res.status(401).json({ message: "No token" });
+
   try {
-    const decoded = jwt.verify(token, SECRET);
-    res.json(decoded);
-  } catch {
-    res.status(401).json({ message: 'Invalid token' });
+    const decoded = jwt.verify(token, SECRET) as { id: string; role: string };
+    const user = await User.findById(decoded.id).select("-password"); // hide password
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json(user);
+  } catch (err) {
+    res.status(401).json({ message: "Invalid token" });
   }
 });
 
