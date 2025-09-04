@@ -118,4 +118,38 @@ router.delete('/cleanup', async (req, res) => {
   }
 });
 
+// PATCH update reservation status (approve / reject)
+router.patch('/:id', async (req, res) => {
+  try {
+    const { status } = req.body;
+    const allowed = ['approved', 'rejected'];
+    if (!allowed.includes(status)) {
+      return res.status(400).json({ message: 'Invalid status' });
+    }
+
+    // First find reservation (with room populated)
+    const reservation = await Reservation.findById(req.params.id).populate('room');
+    if (!reservation) {
+      return res.status(404).json({ message: 'Reservation not found' });
+    }
+
+    // Update reservation status
+    reservation.status = status;
+    await reservation.save();
+
+    // Update linked room status safely
+    if (reservation.room && reservation.room._id) {
+      await Room.findByIdAndUpdate(
+        reservation.room._id,
+        { status: status === 'approved' ? 'reserved' : 'available' }
+      );
+    }
+
+    res.json(reservation);
+  } catch (error) {
+    console.error('❌ Failed to update reservation:', error);
+    res.status(500).json({ error: 'Failed to update reservation' });
+  }
+});
+
 export default router;
