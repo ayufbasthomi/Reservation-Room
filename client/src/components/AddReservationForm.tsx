@@ -1,41 +1,59 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { formatDateTime } from "../utils/date"; 
+
 const API = import.meta.env.VITE_API_BASE_URL;
 
 export default function ReservationForm() {
   type Room = { _id: string; name: string; capacity?: number; image?: string };
+
   const [rooms, setRooms] = useState<Room[]>([]);
   const [roomId, setRoomId] = useState("");
   const [reservedBy, setReservedBy] = useState("");
+
+  // keep date separate
+  const [date, setDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+
   const [availability, setAvailability] = useState<string | null>(null);
+
+  // build ISO string: "YYYY-MM-DDTHH:mm"
+  const buildDateTime = (d: string, t: string) => {
+    if (!d || !t) return "";
+    return `${d}T${t}`;
+  };
 
   // Fetch room list
   const fetchRooms = async () => {
     const res = await axios.get<Room[]>(`${API}/rooms`);
     const roomsWithImages = res.data.map((room: Room, index: number) => ({
       ...room,
-      // Assign images from public folder based on index
-      image: `/room${index + 1}.jpg`, 
+      image: `/room${index + 1}.jpg`,
     }));
     setRooms(roomsWithImages);
   };
 
   // Book room
   const bookRoom = async () => {
-    if (!roomId || !reservedBy || !startTime || !endTime) {
+    const startDateTime = buildDateTime(date, startTime);
+    const endDateTime = buildDateTime(date, endTime);
+
+    if (!roomId || !reservedBy || !startDateTime || !endDateTime) {
       alert("Please fill all fields");
       return;
     }
+
     await axios.post(`${API}/reservations`, {
       roomId,
       reservedBy,
-      startTime,
-      endTime,
+      startTime: startDateTime,
+      endTime: endDateTime,
     });
+
     alert("Room booked!");
     setReservedBy("");
+    setDate("");
     setStartTime("");
     setEndTime("");
     setAvailability(null);
@@ -43,13 +61,17 @@ export default function ReservationForm() {
 
   // Check availability
   const checkAvailability = async () => {
-    if (!roomId || !startTime || !endTime) {
+    const startDateTime = buildDateTime(date, startTime);
+    const endDateTime = buildDateTime(date, endTime);
+
+    if (!roomId || !startDateTime || !endDateTime) {
       setAvailability(null);
       return;
     }
+
     try {
       const res = await axios.get(`${API}/reservations`, {
-        params: { roomId, startTime, endTime },
+        params: { roomId, startTime: startDateTime, endTime: endDateTime },
       });
       const reservations = res.data as any[];
       if (reservations.length === 0) {
@@ -63,10 +85,9 @@ export default function ReservationForm() {
     }
   };
 
-  // Watch changes
   useEffect(() => {
     checkAvailability();
-  }, [roomId, startTime, endTime]);
+  }, [roomId, date, startTime, endTime]);
 
   useEffect(() => {
     fetchRooms();
@@ -84,11 +105,10 @@ export default function ReservationForm() {
                 roomId === room._id ? "border-blue-500 shadow-lg" : ""
               }`}
             >
-              {/* Room photo */}
               <div className="border rounded-lg w-full h-44 flex items-center justify-center mb-3 bg-gray-100 overflow-hidden">
                 {room.image ? (
                   <img
-                    src={room.image} // now points to /room1.jpg, /room2.jpg, etc.
+                    src={room.image}
                     alt={room.name}
                     className="w-full h-50 object-cover rounded mb-3"
                   />
@@ -125,6 +145,7 @@ export default function ReservationForm() {
           }}
           className="border rounded-lg p-6 flex flex-col space-y-4"
         >
+          {/* Date */}
           <div>
             <label className="block text-sm font-medium mb-1">
               Tanggal Pemakaian
@@ -132,26 +153,14 @@ export default function ReservationForm() {
             <input
               type="date"
               className="w-full border rounded px-3 py-2 bg-gray-100"
-              value={startTime.split("T")[0] || ""}
-              onChange={(e) => {
-                const date = e.target.value;
-                if (startTime) {
-                  setStartTime(date + "T" + startTime.split("T")[1]);
-                } else {
-                  setStartTime(date + "T00:00");
-                }
-                if (endTime) {
-                  setEndTime(date + "T" + endTime.split("T")[1]);
-                }
-              }}
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
             />
           </div>
 
           {/* Availability */}
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Ketersediaan
-            </label>
+            <label className="block text-sm font-medium mb-1">Ketersediaan</label>
             <input
               type="text"
               disabled
@@ -168,39 +177,24 @@ export default function ReservationForm() {
           </div>
 
           {/* Time */}
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Waktu Pemakaian
-            </label>
-            <div className="flex items-center space-x-2">
-              <input
-                type="time"
-                className="w-1/2 border rounded px-3 py-2 bg-gray-100"
-                value={startTime ? startTime.split("T")[1] : ""}
-                onChange={(e) =>
-                  setStartTime(
-                    (startTime.split("T")[0] ||
-                      new Date().toISOString().split("T")[0]) +
-                      "T" +
-                      e.target.value
-                  )
-                }
-              />
-              <span>-</span>
-              <input
-                type="time"
-                className="w-1/2 border rounded px-3 py-2 bg-gray-100"
-                value={endTime ? endTime.split("T")[1] : ""}
-                onChange={(e) =>
-                  setEndTime(
-                    (endTime.split("T")[0] ||
-                      new Date().toISOString().split("T")[0]) +
-                      "T" +
-                      e.target.value
-                  )
-                }
-              />
-            </div>
+          <div className="flex items-center space-x-2">
+            <input
+              type="time"
+              step="60"
+              lang="id-ID"   // force 24-hour
+              className="w-1/2 border rounded px-3 py-2 bg-gray-100"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+            />
+            <span>-</span>
+            <input
+              type="time"
+              step="60"
+              lang="id-ID"   // force 24-hour
+              className="w-1/2 border rounded px-3 py-2 bg-gray-100"
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
+            />
           </div>
 
           {/* PIC */}

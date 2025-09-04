@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
+import { formatDateTime } from "../utils/date";
+
 
 const API = import.meta.env.VITE_API_BASE_URL;
 
@@ -298,9 +300,7 @@ return (
               >
                 <p className="font-semibold">{res.room.name}</p>
                 <p className="text-sm text-gray-600">
-                  {res.reservedBy} —{" "}
-                  {new Date(res.startTime).toLocaleString()} →{" "}
-                  {new Date(res.endTime).toLocaleString()}
+                  {res.reservedBy} — {formatDateTime(res.startTime)} → {formatDateTime(res.endTime)}
                 </p>
                 <p
                   className={`text-sm font-semibold ${
