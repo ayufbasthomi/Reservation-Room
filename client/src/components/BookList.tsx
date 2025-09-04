@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { formatDateTimeLocal } from "../utils/date";
+
 const API = import.meta.env.VITE_API_BASE_URL;
 
 export default function BookList() {
@@ -43,11 +45,11 @@ export default function BookList() {
               <p className="text-lg font-semibold text-gray-800 mb-1">{res.room?.name || '-'}</p>
               <p className="text-sm text-gray-600">
                 <span className="font-medium">From:</span>{' '}
-                {new Date(res.startTime).toLocaleString()}
+                {formatDateTimeLocal(res.startTime)}
               </p>
               <p className="text-sm text-gray-600">
                 <span className="font-medium">To:</span>{' '}
-                {new Date(res.endTime).toLocaleString()}
+                {formatDateTimeLocal(res.endTime)}
               </p>
               <p className="text-sm text-gray-600 mt-1">
                 <span className="font-medium">Booked By:</span> {res.reservedBy}

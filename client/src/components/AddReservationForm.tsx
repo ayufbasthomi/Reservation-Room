@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { formatDateTime } from "../utils/date"; 
+import TimePicker from "react-time-picker";
+import "react-time-picker/dist/TimePicker.css";
+import Select from "react-select";
+import { hours, minutes } from "../utils/times";
+
 
 const API = import.meta.env.VITE_API_BASE_URL;
 
@@ -176,25 +180,78 @@ export default function ReservationForm() {
             />
           </div>
 
-          {/* Time */}
           <div className="flex items-center space-x-2">
-            <input
-              type="time"
-              step="60"
-              lang="id-ID"   // force 24-hour
-              className="w-1/2 border rounded px-3 py-2 bg-gray-100"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-            />
+            {/* Start Time */}
+            <div className="flex space-x-1 w-1/2">
+              <select
+                value={startTime.split(":")[0] || ""}
+                onChange={(e) => {
+                  const minute = startTime.split(":")[1] || "00";
+                  setStartTime(`${e.target.value}:${minute}`);
+                }}
+                className="w-1/2 border rounded px-2 py-2 bg-gray-100"
+              >
+                <option value="">HH</option>
+                {hours.map((h) => (
+                  <option key={h} value={h}>
+                    {h}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={startTime.split(":")[1] || ""}
+                onChange={(e) => {
+                  const hour = startTime.split(":")[0] || "00";
+                  setStartTime(`${hour}:${e.target.value}`);
+                }}
+                className="w-1/2 border rounded px-2 py-2 bg-gray-100"
+              >
+                <option value="">MM</option>
+                {minutes.map((m) => (
+                  <option key={m} value={m}>
+                    {m}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <span>-</span>
-            <input
-              type="time"
-              step="60"
-              lang="id-ID"   // force 24-hour
-              className="w-1/2 border rounded px-3 py-2 bg-gray-100"
-              value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
-            />
+
+            {/* End Time */}
+            <div className="flex space-x-1 w-1/2">
+              <select
+                value={endTime.split(":")[0] || ""}
+                onChange={(e) => {
+                  const minute = endTime.split(":")[1] || "00";
+                  setEndTime(`${e.target.value}:${minute}`);
+                }}
+                className="w-1/2 border rounded px-2 py-2 bg-gray-100"
+              >
+                <option value="">HH</option>
+                {hours.map((h) => (
+                  <option key={h} value={h}>
+                    {h}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={endTime.split(":")[1] || ""}
+                onChange={(e) => {
+                  const hour = endTime.split(":")[0] || "00";
+                  setEndTime(`${hour}:${e.target.value}`);
+                }}
+                className="w-1/2 border rounded px-2 py-2 bg-gray-100"
+              >
+                <option value="">MM</option>
+                {minutes.map((m) => (
+                  <option key={m} value={m}>
+                    {m}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           {/* PIC */}

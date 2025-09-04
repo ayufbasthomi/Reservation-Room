@@ -1,18 +1,13 @@
 // utils/date.ts
-export const formatDateTime = (dateString: string) => {
-  const date = new Date(dateString);
+export function formatDateTimeLocal(dateTime: string) {
+  // input: "YYYY-MM-DDTHH:mm" or "YYYY-MM-DDTHH:mm:ss.sssZ"
+  const [datePart, timePart] = dateTime.split("T");
+  const [year, month, day] = datePart.split("-").map(Number);
 
-  const datePart = date.toLocaleDateString("id-ID", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+  // Keep only HH:mm
+  const [hour, minute] = timePart.split(":");
 
-  const timePart = date.toLocaleTimeString("id-ID", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false, // 24h format
-  });
-
-  return `${datePart}, ${timePart}`;
-};
+  return `${day}-${month.toString().padStart(2, "0")}-${year
+    .toString()
+    .padStart(2, "0")} ${hour}:${minute}`;
+}
