@@ -111,7 +111,7 @@ export default function AccountManager() {
       );
 
       // ✅ Immediately reload user info after update
-      await fetchUser();
+        await fetchUser();
 
       alert("Profile updated!");
       setPassword("");

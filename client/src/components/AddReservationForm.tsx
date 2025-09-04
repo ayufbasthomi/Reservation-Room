@@ -85,15 +85,15 @@ export default function ReservationForm() {
               }`}
             >
               {/* Room photo */}
-              <div className="border rounded-lg w-full h-28 flex items-center justify-center mb-3 bg-gray-100 overflow-hidden">
+              <div className="border rounded-lg w-full h-44 flex items-center justify-center mb-3 bg-gray-100 overflow-hidden">
                 {room.image ? (
                   <img
                     src={room.image} // now points to /room1.jpg, /room2.jpg, etc.
                     alt={room.name}
-                    className="w-full h-32 object-cover rounded mb-3"
+                    className="w-full h-50 object-cover rounded mb-3"
                   />
                 ) : (
-                  <div className="w-full h-32 bg-gray-300 rounded mb-3 flex items-center justify-center text-gray-500">
+                  <div className="w-full h-50 bg-gray-300 rounded mb-3 flex items-center justify-center text-gray-500">
                     No Image
                   </div>
                 )}
