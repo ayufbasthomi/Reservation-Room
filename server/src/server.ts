@@ -7,6 +7,7 @@ import roomRoutes from './routes/roomRoutes';
 import reservationRoutes from './routes/reservationRoutes';
 import Room from './models/Room';
 import authRoutes from './routes/auth';
+import path from 'path';
 
 dotenv.config();
 
@@ -19,10 +20,11 @@ app.use(express.json());
 app.use('/api/rooms', roomRoutes);
 app.use('/api/reservations', reservationRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 mongoose.connect(process.env.MONGO_URI!)
   .then(async () => {
-    console.log('✅ Connected to MongoDB');
+    console.log('✅ Connected to MongoDB'); 
     await createDefaultRooms();
     app.listen(PORT, () => {
       console.log(`🚀 Server running at http://localhost:${PORT}`);
@@ -41,7 +43,7 @@ async function createDefaultRooms() {
       { name: 'Room B', status: 'available' },
       { name: 'Room C', status: 'available' }
     ]);
-    console.log('✅ Default rooms created');
+    console.log('✅ Default rooms created');  
   } else {
     // ✅ Optional: reset all statuses back to "available"
     await Room.updateMany({}, { status: 'available' });

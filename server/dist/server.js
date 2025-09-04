@@ -11,6 +11,7 @@ const roomRoutes_1 = __importDefault(require("./routes/roomRoutes"));
 const reservationRoutes_1 = __importDefault(require("./routes/reservationRoutes"));
 const Room_1 = __importDefault(require("./models/Room"));
 const auth_1 = __importDefault(require("./routes/auth"));
+const path_1 = __importDefault(require("path"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5000;
@@ -19,6 +20,7 @@ app.use(express_1.default.json());
 app.use('/api/rooms', roomRoutes_1.default);
 app.use('/api/reservations', reservationRoutes_1.default);
 app.use('/api/auth', auth_1.default);
+app.use('/uploads', express_1.default.static(path_1.default.join(__dirname, '../uploads')));
 mongoose_1.default.connect(process.env.MONGO_URI)
     .then(async () => {
     console.log('✅ Connected to MongoDB');
